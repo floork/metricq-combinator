@@ -19,7 +19,7 @@ int main()
                 { { "operation", "*" },
                   { "left", 5 },
                   { "right", { { "operation", "-" }, { "left", 45 }, { "right", 3 } } } } } },
-            "(5 * (45 - 3))" });
+            "5 * (45 - 3)" });
 
         testCases.emplace_back(TestDisplayExpression{
             { { "expression",
@@ -27,7 +27,7 @@ int main()
                   { "left", { { "operation", "+" }, { "left", 1 }, { "right", 2 } } },
                   { "right",
                     { { "operation", "-" }, { "left", 10 }, { "right", "dummy.source" } } } } } },
-            "((1 + 2) * (10 - dummy.source))" });
+            "(1 + 2) * (10 - dummy.source)" });
 
         testCases.emplace_back(TestDisplayExpression{
             { { "expression",
@@ -40,7 +40,7 @@ int main()
                     { { "operation", "throttle" },
                       { "cooldown_period", "42" },
                       { "input", 8 } } } } } },
-            "((15.300000 + min[42, 24, 8, 12]) - 8)" });
+            "(15.3 + min[42, 24, 8, 12]) - 8" });
 
         // Test the cases
         for (const auto& testCase : testCases)
