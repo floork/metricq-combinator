@@ -65,7 +65,7 @@ std::string handleBasicExpression(const nlohmann::json& expression)
         return expression.get<std::string>();
     }
 
-    throw std::runtime_error("Expression is not a basic type (number or string)!");
+    throw std::invalid_argument("Expression is not a basic type (number or string)!");
 }
 
 std::string handleOperatorExpression(const std::string& operation, const std::string& leftStr,
@@ -73,7 +73,7 @@ std::string handleOperatorExpression(const std::string& operation, const std::st
 {
     if (operation.size() > 1)
     {
-        throw std::logic_error("Invalid operator length!");
+        throw std::invalid_argument("Invalid operator length!");
     }
 
     switch (operation[0])
@@ -84,7 +84,7 @@ std::string handleOperatorExpression(const std::string& operation, const std::st
     case '/':
         return "(" + leftStr + " " + operation + " " + rightStr + ")";
     default:
-        throw std::runtime_error("Invalid operator: " + operation);
+        throw std::invalid_argument("Invalid operator: " + operation);
     }
 }
 
@@ -95,12 +95,12 @@ std::string handleCombinationExpression(const std::string& operation,
 
     if (validAggregates.find(operation) == validAggregates.end())
     {
-        throw std::runtime_error("Invalid aggregate operation: " + operation);
+        throw std::invalid_argument("Invalid aggregate operation: " + operation);
     }
 
     if (inputs.empty())
     {
-        throw std::logic_error("Aggregate operation missing inputs!");
+        throw std::invalid_argument("Aggregate operation missing inputs!");
     }
 
     auto input = std::accumulate(std::next(inputs.begin()), inputs.end(), inputs[0],
@@ -118,7 +118,7 @@ std::string Combinator::displayExpression(const nlohmann::json& expression)
 
     if (!expression.is_object() || !expression.contains("operation"))
     {
-        throw std::runtime_error("Unknown expression format!");
+        throw std::invalid_argument("Unknown expression format!");
     }
 
     std::string operation = expression.value("operation", "");
@@ -127,7 +127,7 @@ std::string Combinator::displayExpression(const nlohmann::json& expression)
     {
         if (!expression.contains("input"))
         {
-            throw std::logic_error("Throttle does not contain a input");
+            throw std::invalid_argument("Throttle does not contain a input");
         }
         return handleBasicExpression(expression["input"]);
     }
@@ -143,7 +143,7 @@ std::string Combinator::displayExpression(const nlohmann::json& expression)
     {
         if (!expression["inputs"].is_array())
         {
-            throw std::logic_error("Inputs must be an array!");
+            throw std::invalid_argument("Inputs must be an array!");
         }
 
         std::vector<std::string> inputStrings;
@@ -154,7 +154,7 @@ std::string Combinator::displayExpression(const nlohmann::json& expression)
         return handleCombinationExpression(operation, inputStrings);
     }
 
-    throw std::runtime_error("Unsupported operation type: " + operation);
+    throw std::invalid_argument("Unsupported operation type: " + operation);
 }
 
 void Combinator::on_transformer_config(const metricq::json& config)
