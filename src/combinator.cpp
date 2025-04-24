@@ -55,9 +55,24 @@ std::string handleBasicExpression(const nlohmann::json& expression)
 {
     if (expression.is_number())
     {
-        auto value = expression.get<double>();
-        return (value == static_cast<int>(value)) ? std::to_string(static_cast<int>(value)) :
-                                                    std::to_string(value);
+        const auto value = expression.get<double>();
+
+        if (std::floor(value) == value)
+        {
+            return std::to_string(static_cast<std::int64_t>(value));
+        }
+
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(1) << value;
+        auto result = oss.str();
+
+        result.erase(result.find_last_not_of('0') + 1);
+        if (result.back() == '.')
+        {
+            result.pop_back();
+        }
+
+        return result;
     }
 
     if (expression.is_string())
