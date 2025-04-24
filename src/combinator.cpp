@@ -25,6 +25,7 @@
 
 #include <fmt/format.h>
 
+#include <iomanip>
 #include <numeric>
 #include <stdexcept>
 #include <unordered_set>
