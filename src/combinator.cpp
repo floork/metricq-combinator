@@ -109,7 +109,7 @@ std::string handleCombinationExpression(const std::string& operation,
     return operation + "[" + input + "]";
 }
 
-std::string Combinator::displayExpression(const nlohmann::json& expression)
+std::string buildExpression(const nlohmann::json& expression)
 {
     if (expression.is_number() || expression.is_string())
     {
@@ -134,8 +134,8 @@ std::string Combinator::displayExpression(const nlohmann::json& expression)
 
     if (expression.contains("left") && expression.contains("right"))
     {
-        std::string leftStr = displayExpression(expression["left"]);
-        std::string rightStr = displayExpression(expression["right"]);
+        std::string leftStr = buildExpression(expression["left"]);
+        std::string rightStr = buildExpression(expression["right"]);
         return handleOperatorExpression(operation, leftStr, rightStr);
     }
 
@@ -149,12 +149,23 @@ std::string Combinator::displayExpression(const nlohmann::json& expression)
         std::vector<std::string> inputStrings;
         for (const auto& input : expression["inputs"])
         {
-            inputStrings.push_back(displayExpression(input));
+            inputStrings.push_back(buildExpression(input));
         }
         return handleCombinationExpression(operation, inputStrings);
     }
 
     throw std::invalid_argument("Unsupported operation type: " + operation);
+}
+
+std::string Combinator::displayExpression(const nlohmann::json& expression)
+{
+    std::string result = buildExpression(expression);
+    if (!result.empty() && result.front() == '(' && result.back() == ')')
+    {
+        result = result.substr(1, result.size() - 2);
+    }
+
+    return result;
 }
 
 void Combinator::on_transformer_config(const metricq::json& config)
