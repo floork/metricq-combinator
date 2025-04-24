@@ -205,9 +205,11 @@ void Combinator::on_transformer_config(const metricq::json& config)
         {
             metric.metadata["displayExpression"] = displayExpression(combined_expression);
         }
-        catch (std::runtime_error&)
+        catch (const std::runtime_error& e)
         {
-            Log::error("Failed to create the Display Expression");
+            Log::error() << fmt::format(
+                "Failed to create the Display Expression, metric: {}, error: {}", metric.id(),
+                e.what());
         }
 
         if (combined_config.count("chunk_size"))
