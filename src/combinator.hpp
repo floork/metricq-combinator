@@ -33,7 +33,6 @@ private:
 public:
     Combinator(const std::string& manager_host, const std::string& token);
     ~Combinator();
-    static std::string displayExpression(const nlohmann::json& expression);
 
 private:
     void on_transformer_config(const metricq::json& config) override;
